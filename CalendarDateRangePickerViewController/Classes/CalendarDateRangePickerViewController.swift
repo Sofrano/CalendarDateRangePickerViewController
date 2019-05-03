@@ -114,10 +114,10 @@ extension CalendarDateRangePickerViewController {
         
         if (weekDay - 1) < 7 {
             cell.label.text = getWeekdayLabel(weekday: weekDay)
-        } else if (weekDay - 1) < 7 + blankItems {
+        } else if (weekDay - 2) < 7 + blankItems {
             cell.label.text = ""
         } else {
-            let dayOfMonth = weekDay - (7 + blankItems)
+            let dayOfMonth = (weekDay - 1) - (7 + blankItems)
             let date = getDate(dayOfMonth: dayOfMonth, section: indexPath.section)
             cell.date = date
             cell.label.text = "\(dayOfMonth)"

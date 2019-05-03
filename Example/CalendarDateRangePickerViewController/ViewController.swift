@@ -20,10 +20,10 @@ class ViewController: UIViewController {
         dateRangePickerViewController.calendar = customCalendar
         
         dateRangePickerViewController.delegate = self
-        dateRangePickerViewController.minimumDate = Date()
-        dateRangePickerViewController.maximumDate = Calendar.current.date(byAdding: .year,
-                                                                          value: 2,
+        dateRangePickerViewController.minimumDate = Calendar.current.date(byAdding: .year,
+                                                                          value: -2,
                                                                           to: Date())
+        dateRangePickerViewController.maximumDate = Date()
         dateRangePickerViewController.selectedStartDate = Date()
         dateRangePickerViewController.selectedEndDate = Calendar.current.date(byAdding: .day,
                                                                               value: 10,
