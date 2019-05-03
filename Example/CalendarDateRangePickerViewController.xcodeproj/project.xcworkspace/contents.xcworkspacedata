@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:CalendarDateRangePickerViewController.xcodeproj">
+      location = "group:/Users/dmitriysafarov/Projects/Gitlab/CalendarDateRange/Example/Tests/CalendarDateRangePickerViewController">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

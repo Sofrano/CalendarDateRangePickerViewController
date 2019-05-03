@@ -30,7 +30,7 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
     public var selectedStartDate: Date?
     public var selectedEndDate: Date?
     
-    public var selectedColor = UIColor(red: 66/235.0, green: 150/255.0, blue: 240/255.0, alpha: 1.0)
+    public var selectedColor = UIColor(red: 66/255.0, green: 150/255.0, blue: 240/255.0, alpha: 1.0)
     public var titleText = "Select Dates"
 
     override public func viewDidLoad() {
@@ -43,7 +43,7 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
         collectionView?.backgroundColor = UIColor.white
 
         collectionView?.register(CalendarDateRangePickerCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
-        collectionView?.register(CalendarDateRangePickerHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
+        collectionView?.register(CalendarDateRangePickerHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerReuseIdentifier)
         collectionView?.contentInset = collectionViewInsets
         
         if minimumDate == nil {
@@ -53,22 +53,16 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
             maximumDate = Calendar.current.date(byAdding: .year, value: 3, to: minimumDate)
         }
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
-                                                                style: .plain,
-                                                                target: self,
-                                                                action: #selector(CalendarDateRangePickerViewController.didTapCancel))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done",
-                                                                 style: .done,
-                                                                 target: self,
-                                                                 action: #selector(CalendarDateRangePickerViewController.didTapDone))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(CalendarDateRangePickerViewController.didTapCancel))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(CalendarDateRangePickerViewController.didTapDone))
         self.navigationItem.rightBarButtonItem?.isEnabled = selectedStartDate != nil && selectedEndDate != nil
     }
     
-    @objc func didTapCancel() {
+    func didTapCancel() {
         delegate.didCancelPickingDateRange()
     }
     
-    @objc func didTapDone() {
+    func didTapDone() {
         if selectedStartDate == nil || selectedEndDate == nil {
             return
         }
@@ -136,11 +130,9 @@ extension CalendarDateRangePickerViewController {
         return cell
     }
     
-    override public func collectionView(_ collectionView: UICollectionView,
-                                        viewForSupplementaryElementOfKind kind: String,
-                                        at indexPath: IndexPath) -> UICollectionReusableView {
+    override public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
-        case UICollectionView.elementKindSectionHeader:
+        case UICollectionElementKindSectionHeader:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReuseIdentifier, for: indexPath) as! CalendarDateRangePickerHeaderView
             headerView.label.text = getMonthLabel(date: getFirstDateForSection(section: indexPath.section))
             return headerView
