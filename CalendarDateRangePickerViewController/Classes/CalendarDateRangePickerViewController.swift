@@ -97,7 +97,7 @@ extension CalendarDateRangePickerViewController {
     override public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let firstDateForSection = getFirstDateForSection(section: section)
         let weekdayRowItems = 7
-        let blankItems = getWeekday(date: firstDateForSection) - 1
+        let blankItems = getWeekday(date: firstDateForSection) - 2
         let daysInMonth = getNumberOfDaysInMonth(date: firstDateForSection)
         return weekdayRowItems + blankItems + daysInMonth
     }
@@ -106,7 +106,7 @@ extension CalendarDateRangePickerViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! CalendarDateRangePickerCell
         cell.selectedColor = self.selectedColor
         cell.reset()
-        let blankItems = getWeekday(date: getFirstDateForSection(section: indexPath.section)) - 1
+        let blankItems = getWeekday(date: getFirstDateForSection(section: indexPath.section)) - 2
         var weekDay = indexPath.item + calendar.firstWeekday
         if weekDay == 8 {
             weekDay = 1
@@ -223,6 +223,7 @@ extension CalendarDateRangePickerViewController {
         components.day = 1
         return calendar.date(from: components)!
     }
+    
     
     func getFirstDateForSection(section: Int) -> Date {
         return calendar.date(byAdding: .month, value: section, to: getFirstDate())!
