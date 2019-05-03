@@ -9,8 +9,10 @@
 import UIKit
 
 public protocol CalendarDateRangePickerViewControllerDelegate {
-    func didCancelPickingDateRange()
-    func didPickDateRange(startDate: Date!, endDate: Date!)
+    func didCancelPickingDateRange(_ viewController: CalendarDateRangePickerViewController)
+    func didPickDateRange(_ viewController: CalendarDateRangePickerViewController,
+                          startDate: Date!,
+                          endDate: Date!)
 }
 
 public class CalendarDateRangePickerViewController: UICollectionViewController {
@@ -77,31 +79,31 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
         super.viewDidLayoutSubviews()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if scrollToEnd {
             let difference = calendar.dateComponents([.month], from: minimumDate, to: maximumDate)
-            collectionView?.scrollToItem(at: IndexPath(row: 0, section: difference.month!),
+            collectionView?.scrollToItem(at: IndexPath(row: 0, section: difference.month! - 1),
                                          at: .top,
-                                         animated: false)
+                                         animated: true)
         } else
             if let date = scrollToDate {
                 let difference = calendar.dateComponents([.month], from: minimumDate, to: date)
                 collectionView?.scrollToItem(at: IndexPath(row: 0, section: difference.month!),
                                              at: .top,
-                                             animated: false)
-            }
+                                             animated: true)
+        }
     }
     
     @objc func didTapCancel() {
-        delegate.didCancelPickingDateRange()
+        delegate.didCancelPickingDateRange(self)
     }
     
     @objc func didTapDone() {
         if selectedStartDate == nil || selectedEndDate == nil {
             return
         }
-        delegate.didPickDateRange(startDate: selectedStartDate!, endDate: selectedEndDate!)
+        delegate.didPickDateRange(self, startDate: selectedStartDate!, endDate: selectedEndDate!)
     }
     
 }
