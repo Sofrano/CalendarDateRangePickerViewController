@@ -15,6 +15,10 @@ class ViewController: UIViewController {
     
     @IBAction func didTapButton(_ sender: Any) {
         let dateRangePickerViewController = CalendarDateRangePickerViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        var customCalendar = Calendar(identifier: .gregorian)
+        customCalendar.firstWeekday = 2
+        dateRangePickerViewController.calendar = customCalendar
+        
         dateRangePickerViewController.delegate = self
         dateRangePickerViewController.minimumDate = Date()
         dateRangePickerViewController.maximumDate = Calendar.current.date(byAdding: .year,
@@ -26,6 +30,7 @@ class ViewController: UIViewController {
                                                                               to: Date())
         dateRangePickerViewController.selectedColor = UIColor.red
         dateRangePickerViewController.titleText = "Select Date Range"
+        
         let navigationController = UINavigationController(rootViewController: dateRangePickerViewController)
         self.navigationController?.present(navigationController, animated: true, completion: nil)
     }

@@ -18,11 +18,15 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
     let cellReuseIdentifier = "CalendarDateRangePickerCell"
     let headerReuseIdentifier = "CalendarDateRangePickerHeaderView"
     
+    public var calendar = Calendar(identifier: .gregorian)
     public var delegate: CalendarDateRangePickerViewControllerDelegate!
     
     let itemsPerRow = 7
     let itemHeight: CGFloat = 40
-    let collectionViewInsets = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
+    let collectionViewInsets = UIEdgeInsets(top: 0,
+                                            left: 25,
+                                            bottom: 0,
+                                            right: 25)
     
     public var minimumDate: Date!
     public var maximumDate: Date!
@@ -30,12 +34,14 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
     public var selectedStartDate: Date?
     public var selectedEndDate: Date?
     
-    public var selectedColor = UIColor(red: 66/235.0, green: 150/255.0, blue: 240/255.0, alpha: 1.0)
+    public var selectedColor = UIColor(red: 66/235.0,
+                                       green: 150/255.0,
+                                       blue: 240/255.0,
+                                       alpha: 1.0)
     public var titleText = "Select Dates"
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        
         self.title = self.titleText
         
         collectionView?.dataSource = self
@@ -50,7 +56,7 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
             minimumDate = Date()
         }
         if maximumDate == nil {
-            maximumDate = Calendar.current.date(byAdding: .year, value: 3, to: minimumDate)
+            maximumDate = calendar.date(byAdding: .year, value: 3, to: minimumDate)
         }
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
@@ -63,6 +69,8 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
                                                                  action: #selector(CalendarDateRangePickerViewController.didTapDone))
         self.navigationItem.rightBarButtonItem?.isEnabled = selectedStartDate != nil && selectedEndDate != nil
     }
+
+    
     
     @objc func didTapCancel() {
         delegate.didCancelPickingDateRange()
@@ -82,7 +90,7 @@ extension CalendarDateRangePickerViewController {
     // UICollectionViewDataSource
     
     override public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        let difference = Calendar.current.dateComponents([.month], from: minimumDate, to: maximumDate)
+        let difference = calendar.dateComponents([.month], from: minimumDate, to: maximumDate)
         return difference.month! + 1
     }
     
@@ -99,12 +107,17 @@ extension CalendarDateRangePickerViewController {
         cell.selectedColor = self.selectedColor
         cell.reset()
         let blankItems = getWeekday(date: getFirstDateForSection(section: indexPath.section)) - 1
-        if indexPath.item < 7 {
-            cell.label.text = getWeekdayLabel(weekday: indexPath.item + 1)
-        } else if indexPath.item < 7 + blankItems {
+        var weekDay = indexPath.item + calendar.firstWeekday
+        if weekDay == 8 {
+            weekDay = 1
+        }
+        
+        if (weekDay - 1) < 7 {
+            cell.label.text = getWeekdayLabel(weekday: weekDay)
+        } else if (weekDay - 1) < 7 + blankItems {
             cell.label.text = ""
         } else {
-            let dayOfMonth = indexPath.item - (7 + blankItems) + 1
+            let dayOfMonth = weekDay - (7 + blankItems)
             let date = getDate(dayOfMonth: dayOfMonth, section: indexPath.section)
             cell.date = date
             cell.label.text = "\(dayOfMonth)"
@@ -206,13 +219,13 @@ extension CalendarDateRangePickerViewController {
     // Helper functions
     
     func getFirstDate() -> Date {
-        var components = Calendar.current.dateComponents([.month, .year], from: minimumDate)
+        var components = calendar.dateComponents([.month, .year], from: minimumDate)
         components.day = 1
-        return Calendar.current.date(from: components)!
+        return calendar.date(from: components)!
     }
     
     func getFirstDateForSection(section: Int) -> Date {
-        return Calendar.current.date(byAdding: .month, value: section, to: getFirstDate())!
+        return calendar.date(byAdding: .month, value: section, to: getFirstDate())!
     }
     
     func getMonthLabel(date: Date) -> String {
@@ -223,37 +236,40 @@ extension CalendarDateRangePickerViewController {
     
     func getWeekdayLabel(weekday: Int) -> String {
         var components = DateComponents()
-        components.calendar = Calendar.current
+        components.calendar = calendar
         components.weekday = weekday
-        let date = Calendar.current.nextDate(after: Date(), matching: components, matchingPolicy: Calendar.MatchingPolicy.strict)
+        let date = calendar.nextDate(after: Date(),
+                                     matching: components,
+                                     matchingPolicy: Calendar.MatchingPolicy.strict)
         if date == nil {
             return "E"
         }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEEE"
-        return dateFormatter.string(from: date!)
+        var result = dateFormatter.string(from: date!)
+        return result
     }
     
     func getWeekday(date: Date) -> Int {
-        return Calendar.current.dateComponents([.weekday], from: date).weekday!
+        return calendar.dateComponents([.weekday], from: date).weekday!
     }
     
     func getNumberOfDaysInMonth(date: Date) -> Int {
-        return Calendar.current.range(of: .day, in: .month, for: date)!.count
+        return calendar.range(of: .day, in: .month, for: date)!.count
     }
     
     func getDate(dayOfMonth: Int, section: Int) -> Date {
-        var components = Calendar.current.dateComponents([.month, .year], from: getFirstDateForSection(section: section))
+        var components = calendar.dateComponents([.month, .year], from: getFirstDateForSection(section: section))
         components.day = dayOfMonth
-        return Calendar.current.date(from: components)!
+        return calendar.date(from: components)!
     }
     
     func areSameDay(dateA: Date, dateB: Date) -> Bool {
-        return Calendar.current.compare(dateA, to: dateB, toGranularity: .day) == ComparisonResult.orderedSame
+        return calendar.compare(dateA, to: dateB, toGranularity: .day) == ComparisonResult.orderedSame
     }
     
     func isBefore(dateA: Date, dateB: Date) -> Bool {
-        return Calendar.current.compare(dateA, to: dateB, toGranularity: .day) == ComparisonResult.orderedAscending
+        return calendar.compare(dateA, to: dateB, toGranularity: .day) == ComparisonResult.orderedAscending
     }
     
 }
