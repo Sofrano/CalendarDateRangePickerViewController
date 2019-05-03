@@ -28,6 +28,7 @@ class ViewController: UIViewController {
         dateRangePickerViewController.selectedEndDate = Calendar.current.date(byAdding: .day,
                                                                               value: 10,
                                                                               to: Date())
+        dateRangePickerViewController.scrollToDate = Date()
         dateRangePickerViewController.selectedColor = UIColor.red
         dateRangePickerViewController.titleText = "Select Date Range"
         

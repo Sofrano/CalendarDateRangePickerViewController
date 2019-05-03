@@ -20,6 +20,8 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
     
     public var calendar = Calendar(identifier: .gregorian)
     public var delegate: CalendarDateRangePickerViewControllerDelegate!
+    public var scrollToEnd: Bool = false
+    public var scrollToDate: Date?
     
     let itemsPerRow = 7
     let itemHeight: CGFloat = 40
@@ -42,6 +44,7 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
         self.title = self.titleText
         
         collectionView?.dataSource = self
@@ -70,7 +73,25 @@ public class CalendarDateRangePickerViewController: UICollectionViewController {
         self.navigationItem.rightBarButtonItem?.isEnabled = selectedStartDate != nil && selectedEndDate != nil
     }
 
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if scrollToEnd {
+            let difference = calendar.dateComponents([.month], from: minimumDate, to: maximumDate)
+            collectionView?.scrollToItem(at: IndexPath(row: 0, section: difference.month!),
+                                         at: .top,
+                                         animated: false)
+        } else
+            if let date = scrollToDate {
+                let difference = calendar.dateComponents([.month], from: minimumDate, to: date)
+                collectionView?.scrollToItem(at: IndexPath(row: 0, section: difference.month!),
+                                             at: .top,
+                                             animated: false)
+            }
+    }
     
     @objc func didTapCancel() {
         delegate.didCancelPickingDateRange()
